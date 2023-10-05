@@ -1,10 +1,10 @@
 package com.example.orgnavigator.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.time.LocalDate;
+import java.time.Period;
 
 @Entity
 @Data
@@ -15,10 +15,12 @@ public class Employee {
 
     String firstname;
     String lastname;
-    int age;
+    LocalDate birthDate;
     int workingAge;
     int salary;
     String position;
+
+
 
     public Integer getId() {
         return id;
@@ -44,13 +46,7 @@ public class Employee {
         this.lastname = lastName;
     }
 
-    public int getAge() {
-        return age;
-    }
 
-    public void setAge(int age) {
-        this.age = age;
-    }
 
     public int getWorkingAge() {
         return workingAge;
@@ -74,5 +70,27 @@ public class Employee {
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public int getAge() {
+        if (birthDate != null) {
+            LocalDate currentDate = LocalDate.now();
+            Period period = Period.between(birthDate, currentDate);
+            return period.getYears();
+        } else {
+            return 0; // Handle the case where birthDate is null
+        }
+    }
+
+    public void incrementAge() {
+        int newAge = getAge() + 1;
     }
 }
