@@ -16,22 +16,25 @@ public class Project {
 
     String description;
 
+
+    private String status;
+
     @ElementCollection
     List<String> technologies;
 
     @ManyToMany
     List<Employee> employees;
 
-
     public Project(){
     }
 
-    public Project(Long id, String title, String description, List<String> technologies, List<Employee> employees) {
+    public Project(Long id, String title, String description, List<String> technologies, List<Employee> employees, String status) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.technologies = technologies;
         this.employees = employees;
+        this.status = status;
     }
 
     public Long getId() {
@@ -72,5 +75,13 @@ public class Project {
 
     public void setEmployees(List<Employee> employees) {
         this.employees = employees;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
