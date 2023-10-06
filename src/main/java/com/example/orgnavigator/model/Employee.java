@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.time.Period;
 
 @Entity
-@Data
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +20,11 @@ public class Employee {
     String position;
 
 
+    public Employee() {
+    }
+    public Employee(Integer id) {
+        this.id = id;
+    }
 
     public Integer getId() {
         return id;
