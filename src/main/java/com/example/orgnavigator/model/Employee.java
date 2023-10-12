@@ -10,7 +10,7 @@ import java.time.Period;
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    Long id;
 
     String firstname;
     String lastname;
@@ -22,15 +22,15 @@ public class Employee {
 
     public Employee() {
     }
-    public Employee(Integer id) {
+    public Employee(Long id) {
         this.id = id;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -90,7 +90,7 @@ public class Employee {
             Period period = Period.between(birthDate, currentDate);
             return period.getYears();
         } else {
-            return 0; // Handle the case where birthDate is null
+            return 0;
         }
     }
 

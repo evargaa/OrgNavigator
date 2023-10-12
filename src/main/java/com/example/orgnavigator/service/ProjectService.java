@@ -2,6 +2,7 @@ package com.example.orgnavigator.service;
 
 import com.example.orgnavigator.model.Employee;
 import com.example.orgnavigator.model.Project;
+import com.example.orgnavigator.repository.EmployeeRepository;
 import com.example.orgnavigator.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,9 @@ public class ProjectService {
 
     @Autowired
     ProjectRepository projectRepository;
+
+    @Autowired
+    EmployeeRepository employeeRepository;
 
     public ResponseEntity<List<Project>> allProjects() {
         try {
@@ -35,7 +39,7 @@ public class ProjectService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-            return new ResponseEntity<>("Error occurred while making " + newProject.getTitle() + " project.", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Error occurred while making " + newProject.getTitle() + " project.", HttpStatus.BAD_REQUEST);
     }
 
     public ResponseEntity<Optional<Project>> findProjectById(Long id) {

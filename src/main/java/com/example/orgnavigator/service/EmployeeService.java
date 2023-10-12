@@ -37,7 +37,7 @@ public class EmployeeService {
         return new ResponseEntity<>("Error occurred while tried to add new employee", HttpStatus.BAD_REQUEST);
     }
 
-    public ResponseEntity<Optional<Employee>> getEmployeeById(Integer id) {
+    public ResponseEntity<Optional<Employee>> getEmployeeById(Long id) {
         try {
             if(employeeRepository.findById(id).isPresent()){
                 return new ResponseEntity<>(employeeRepository.findById(id), HttpStatus.OK);
@@ -48,7 +48,7 @@ public class EmployeeService {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    public ResponseEntity<String> updateEmployee(Integer id, Employee updatedEmployee) {
+    public ResponseEntity<String> updateEmployee(Long id, Employee updatedEmployee) {
         try {
                 Optional<Employee> optionalEmployee  = employeeRepository.findById(id);
             if(optionalEmployee.isPresent()) {
@@ -76,7 +76,7 @@ public class EmployeeService {
         return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
     }
 
-    public ResponseEntity<String> deleteEmployee(Integer id) {
+    public ResponseEntity<String> deleteEmployee(Long id) {
         try{
             if(employeeRepository.findById(id).isPresent()){
                 employeeRepository.deleteById(id);

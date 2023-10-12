@@ -40,4 +40,7 @@ public class ProjectController {
     public ResponseEntity<String> updateStatus(@PathVariable Long id, @RequestBody Project newStatus) {
         return projectService.updateStatus(id, newStatus);
     }
+
+
+
 }

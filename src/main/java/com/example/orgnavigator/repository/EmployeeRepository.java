@@ -6,6 +6,6 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> findByPositionContaining(String position);
 }
