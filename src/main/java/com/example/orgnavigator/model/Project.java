@@ -2,28 +2,35 @@ package com.example.orgnavigator.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 
+@Getter
 @Entity
 @Data
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
-    String title;
+    private String title;
 
-    String description;
+    private String description;
 
 
     private String status;
 
     @ElementCollection
-    List<String> technologies;
+    private List<String> technologies;
 
     @ManyToMany
-    List<Employee> employees;
+    @JoinTable(
+            name = "project_employees",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "employee_id")
+    )
+    private List<Employee> employees;
 
     public Project(){
     }
@@ -37,48 +44,24 @@ public class Project {
         this.status = status;
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public List<String> getTechnologies() {
-        return technologies;
     }
 
     public void setTechnologies(List<String> technologies) {
         this.technologies = technologies;
     }
 
-    public List<Employee> getEmployees() {
-        return employees;
-    }
-
     public void setEmployees(List<Employee> employees) {
         this.employees = employees;
-    }
-
-    public String getStatus() {
-        return status;
     }
 
     public void setStatus(String status) {
