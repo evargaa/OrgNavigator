@@ -27,4 +27,10 @@ public class PartnersController {
     }
 
 
+    @GetMapping("findByName/{name}")
+    public ResponseEntity<Partners> findPartnerByName(@PathVariable String name) {
+        return partnersService.findPartnerByName(name);
+    }
+
+
 }

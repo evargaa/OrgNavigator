@@ -35,4 +35,14 @@ public class PartnersService {
         }
         return new ResponseEntity<>("Error occurred while adding new partner", HttpStatus.BAD_REQUEST);
     }
+
+
+    public ResponseEntity<Partners> findPartnerByName(String name) {
+        try {
+            return new ResponseEntity<>(partnersRepository.findByNameContaining(name), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
 }
