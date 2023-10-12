@@ -1,5 +1,6 @@
 package com.example.orgnavigator.service;
 
+import com.example.orgnavigator.exceptions.EmployeeException;
 import com.example.orgnavigator.model.Employee;
 import com.example.orgnavigator.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,26 +44,26 @@ public class EmployeeService {
             employeeRepository.save(existingEmployee);
             return new ResponseEntity<>("Successfully edited " + existingEmployee.getFirstName(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Employee not found", HttpStatus.NOT_FOUND);
+            throw new EmployeeException("Error occured while updating employee");
         }
     }
 
     public ResponseEntity<List<Employee>> getEmployeesByPosition(String position) {
         List<Employee> employees = employeeRepository.findByPositionContaining(position);
-        if (!employees.isEmpty()) {
-            return new ResponseEntity<>(employees, HttpStatus.FOUND);
+        if (employees.isEmpty()) {
+            throw new EmployeeException("Employee not found by this position: " + position);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(employees, HttpStatus.FOUND);
         }
     }
 
     public ResponseEntity<String> deleteEmployee(Long id) {
         Optional<Employee> optionalEmployee = employeeRepository.findById(id);
-        if (optionalEmployee.isPresent()) {
+        if (optionalEmployee.isEmpty()) {
+            throw new EmployeeException("Employee not found with ID: " + id);
+        } else {
             employeeRepository.deleteById(id);
             return new ResponseEntity<>("Successfully deleted the employee", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Employee not found", HttpStatus.NOT_FOUND);
         }
     }
 }

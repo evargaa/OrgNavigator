@@ -1,5 +1,6 @@
 package com.example.orgnavigator.service;
 
+import com.example.orgnavigator.exceptions.ProjectException;
 import com.example.orgnavigator.model.Employee;
 import com.example.orgnavigator.model.Project;
 import com.example.orgnavigator.repository.EmployeeRepository;
@@ -32,19 +33,19 @@ public class ProjectService {
     }
 
     public ResponseEntity<Optional<Project>> findProjectById(Long id) {
-        if (projectRepository.findById(id).isPresent()) {
-            return new ResponseEntity<>(projectRepository.findById(id), HttpStatus.OK);
+        if (projectRepository.findById(id).isEmpty()) {
+            throw new ProjectException("Project not found with ID: " + id);
         } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(projectRepository.findById(id), HttpStatus.OK);
         }
     }
 
     public ResponseEntity<String> deleteProject(Long id) {
-        if (projectRepository.findById(id).isPresent()) {
-            projectRepository.deleteById(id);
-            return new ResponseEntity<>("Successfully deleted project", HttpStatus.OK);
+        if (projectRepository.findById(id).isEmpty()) {
+            throw new ProjectException("Project not found with ID: " + id);
         } else {
-            return new ResponseEntity<>("Project not found, please provide a correct ID", HttpStatus.BAD_REQUEST);
+            projectRepository.deleteById(id);
+            return new ResponseEntity<>("Project deleted successfully!", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -58,10 +59,8 @@ public class ProjectService {
                 projectRepository.save(existingProject);
                 return new ResponseEntity<>("Status successfully updated", HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("Status field cannot be null", HttpStatus.BAD_REQUEST);
-            }
+                throw new ProjectException("Status cant be null");            }
         } else {
-            return new ResponseEntity<>("Didn't find a project by ID", HttpStatus.NOT_FOUND);
-        }
+            throw new ProjectException("Project not found with ID: " + id);        }
     }
 }

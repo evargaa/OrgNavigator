@@ -1,8 +1,8 @@
 package com.example.orgnavigator.service;
 
+import com.example.orgnavigator.exceptions.PartnerException;
 import com.example.orgnavigator.model.Partners;
 import com.example.orgnavigator.repository.PartnersRepository;
-import com.example.orgnavigator.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,15 +27,20 @@ public class PartnersService {
     }
 
     public ResponseEntity<Partners> findPartnerByName(String name) {
-        return new ResponseEntity<>(partnersRepository.findByNameContaining(name), HttpStatus.OK);
+        Partners partner = partnersRepository.findByNameContaining(name);
+        if(partner == null){
+            throw new PartnerException("Partner not found with this name: " + name);
+        } else {
+            return new ResponseEntity<>(partner, HttpStatus.OK);
+        }
     }
 
     public ResponseEntity<String> deletePartner(Long id) {
-        if (partnersRepository.findById(id).isPresent()) {
+        if (partnersRepository.findById(id).isEmpty()) {
+            throw new PartnerException("Partner not found with ID: " + id);
+        } else {
             partnersRepository.deleteById(id);
             return new ResponseEntity<>("Successfully deleted partner", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("ID not found", HttpStatus.NOT_FOUND);
         }
     }
 }
