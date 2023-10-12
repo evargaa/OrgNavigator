@@ -18,45 +18,24 @@ public class PartnersService {
     PartnersRepository partnersRepository;
 
     public ResponseEntity<List<Partners>> allPartners() {
-        try {
-            return new ResponseEntity<>(partnersRepository.findAll(), HttpStatus.OK);
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(partnersRepository.findAll(), HttpStatus.OK);
     }
 
     public ResponseEntity<String> addPartner(Partners newPartner) {
-        try {
-            partnersRepository.save(newPartner);
-            return new ResponseEntity<>("Succesfully added new partner!", HttpStatus.CREATED);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>("Error occurred while adding new partner", HttpStatus.BAD_REQUEST);
+        partnersRepository.save(newPartner);
+        return new ResponseEntity<>("Successfully added new partner!", HttpStatus.CREATED);
     }
 
-
     public ResponseEntity<Partners> findPartnerByName(String name) {
-        try {
-            return new ResponseEntity<>(partnersRepository.findByNameContaining(name), HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(partnersRepository.findByNameContaining(name), HttpStatus.OK);
     }
 
     public ResponseEntity<String> deletePartner(Long id) {
-        try {
-            if(partnersRepository.findById(id).isPresent()) {
-                partnersRepository.deleteById(id);
-                return new ResponseEntity<>("Succesfully deleted partner", HttpStatus.OK);
-            } else {
-              return new ResponseEntity<>("ID not found", HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (partnersRepository.findById(id).isPresent()) {
+            partnersRepository.deleteById(id);
+            return new ResponseEntity<>("Successfully deleted partner", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("ID not found", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>("An error occurred while deleting the partner.", HttpStatus.BAD_REQUEST);
     }
 }

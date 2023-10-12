@@ -23,71 +23,45 @@ public class ProjectService {
     EmployeeRepository employeeRepository;
 
     public ResponseEntity<List<Project>> allProjects() {
-        try {
-            return new ResponseEntity<>(projectRepository.findAll(), HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(projectRepository.findAll(), HttpStatus.OK);
     }
 
     public ResponseEntity<String> addNewProject(Project newProject) {
-        try {
-            projectRepository.save(newProject);
-            return new ResponseEntity<>("Project " + newProject.getTitle() +
-                    "has been successfully made", HttpStatus.CREATED);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>("Error occurred while making " + newProject.getTitle() + " project.", HttpStatus.BAD_REQUEST);
+        projectRepository.save(newProject);
+        return new ResponseEntity<>("Project " + newProject.getTitle() + " has been successfully made", HttpStatus.CREATED);
     }
 
     public ResponseEntity<Optional<Project>> findProjectById(Long id) {
-        try {
-            if (projectRepository.findById(id).isPresent()) {
-                return new ResponseEntity<>(projectRepository.findById(id), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        if (projectRepository.findById(id).isPresent()) {
+            return new ResponseEntity<>(projectRepository.findById(id), HttpStatus.OK);
+        } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     public ResponseEntity<String> deleteProject(Long id) {
-        try {
-            if(projectRepository.findById(id).isPresent()){
-                projectRepository.deleteById(id);
-                return new ResponseEntity<>("Successfully deleted project", HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Project not found please another correct ID", HttpStatus.BAD_REQUEST);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (projectRepository.findById(id).isPresent()) {
+            projectRepository.deleteById(id);
+            return new ResponseEntity<>("Successfully deleted project", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Project not found, please provide a correct ID", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("Error occured while deleting project", HttpStatus.BAD_REQUEST);
     }
 
     public ResponseEntity<String> updateStatus(Long id, Project newStatus) {
-        try {
-            Optional<Project> optionalProject = projectRepository.findById(id);
-            if (optionalProject.isPresent()) {
-                Project existingProject = optionalProject.get();
-                String newStatusValue = newStatus.getStatus();
-                if (newStatusValue != null) {
-                    existingProject.setStatus(newStatusValue);
-                    projectRepository.save(existingProject);
-                    return new ResponseEntity<>("Status successfully updated", HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<>("Status field cannot be null", HttpStatus.BAD_REQUEST);
-                }
+        Optional<Project> optionalProject = projectRepository.findById(id);
+        if (optionalProject.isPresent()) {
+            Project existingProject = optionalProject.get();
+            String newStatusValue = newStatus.getStatus();
+            if (newStatusValue != null) {
+                existingProject.setStatus(newStatusValue);
+                projectRepository.save(existingProject);
+                return new ResponseEntity<>("Status successfully updated", HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("Didn't find project by id", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("Status field cannot be null", HttpStatus.BAD_REQUEST);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            return new ResponseEntity<>("Didn't find a project by ID", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>("Error occurred while updating status", HttpStatus.BAD_REQUEST);
     }
 }
