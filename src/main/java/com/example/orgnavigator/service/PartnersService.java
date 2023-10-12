@@ -45,4 +45,18 @@ public class PartnersService {
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
+    public ResponseEntity<String> deletePartner(Long id) {
+        try {
+            if(partnersRepository.findById(id).isPresent()) {
+                partnersRepository.deleteById(id);
+                return new ResponseEntity<>("Succesfully deleted partner", HttpStatus.OK);
+            } else {
+              return new ResponseEntity<>("ID not found", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>("An error occurred while deleting the partner.", HttpStatus.BAD_REQUEST);
+    }
 }

@@ -32,5 +32,9 @@ public class PartnersController {
         return partnersService.findPartnerByName(name);
     }
 
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<String> deletePartner(@PathVariable Long id) {
+        return partnersService.deletePartner(id);
+    }
 
 }
