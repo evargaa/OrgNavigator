@@ -19,9 +19,12 @@ public class Employee {
 
     String lastname;
 
+
     LocalDate birthDate;
 
+
     int workingAge;
+
 
     int salary;
 
@@ -96,6 +99,7 @@ public class Employee {
         this.birthDate = birthDate;
     }
 
+    @JsonIgnore
     public int getAge() {
         if (birthDate != null) {
             LocalDate currentDate = LocalDate.now();
