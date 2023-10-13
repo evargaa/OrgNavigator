@@ -24,7 +24,7 @@ public class Project {
     @ElementCollection
     private List<String> technologies;
 
-    @ManyToMany (cascade = CascadeType.REMOVE)
+    @ManyToMany
     @JoinTable(
             name = "project_employees",
             joinColumns = @JoinColumn(name = "project_id"),
