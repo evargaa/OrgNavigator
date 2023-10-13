@@ -1,10 +1,12 @@
 package com.example.orgnavigator.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 
 @Entity
 @Data
@@ -14,11 +16,20 @@ public class Employee {
     Long id;
 
     String firstname;
+
     String lastname;
+
     LocalDate birthDate;
+
     int workingAge;
+
     int salary;
+
     String position;
+
+    @ManyToMany(mappedBy = "employees")
+    @JsonIgnore
+    private List<Project> projects;
 
 
     public Employee() {
@@ -95,7 +106,17 @@ public class Employee {
         }
     }
 
+    public List<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(List<Project> projects) {
+        this.projects = projects;
+    }
+
     public void incrementAge() {
         int newAge = getAge() + 1;
     }
+
+
 }

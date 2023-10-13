@@ -24,7 +24,7 @@ public class Project {
     @ElementCollection
     private List<String> technologies;
 
-    @ManyToMany
+    @ManyToMany (cascade = CascadeType.REMOVE)
     @JoinTable(
             name = "project_employees",
             joinColumns = @JoinColumn(name = "project_id"),
@@ -34,6 +34,7 @@ public class Project {
 
     public Project(){
     }
+
 
     public Project(Long id, String title, String description, List<String> technologies, List<Employee> employees, String status) {
         this.id = id;
@@ -67,4 +68,5 @@ public class Project {
     public void setStatus(String status) {
         this.status = status;
     }
+
 }

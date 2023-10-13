@@ -2,7 +2,11 @@ package com.example.orgnavigator.service;
 
 import com.example.orgnavigator.exceptions.EmployeeException;
 import com.example.orgnavigator.model.Employee;
+import com.example.orgnavigator.model.Project;
 import com.example.orgnavigator.repository.EmployeeRepository;
+import com.example.orgnavigator.repository.ProjectRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +20,9 @@ public class EmployeeService {
 
     @Autowired
     EmployeeRepository employeeRepository;
+
+    @Autowired
+    ProjectRepository projectRepository;
 
     public ResponseEntity<List<Employee>> getAllEmployees() {
         return new ResponseEntity<>(employeeRepository.findAll(), HttpStatus.OK);
@@ -56,12 +63,19 @@ public class EmployeeService {
             return new ResponseEntity<>(employees, HttpStatus.FOUND);
         }
     }
-
+    @Transactional
     public ResponseEntity<String> deleteEmployee(Long id) {
         Optional<Employee> optionalEmployee = employeeRepository.findById(id);
         if (optionalEmployee.isEmpty()) {
             throw new EmployeeException("Employee not found with ID: " + id);
         } else {
+            Employee employee = optionalEmployee.get();
+            for (Project project : employee.getProjects()){
+                project.getEmployees().remove(employee);
+            }
+
+            projectRepository.saveAll(employee.getProjects());
+
             employeeRepository.deleteById(id);
             return new ResponseEntity<>("Successfully deleted the employee", HttpStatus.OK);
         }
