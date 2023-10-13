@@ -1,6 +1,7 @@
 package com.example.orgnavigator.service;
 
 import com.example.orgnavigator.dto.ProjectWithBasicEmployeeDTO;
+import com.example.orgnavigator.exceptions.EmployeeException;
 import com.example.orgnavigator.exceptions.ProjectException;
 import com.example.orgnavigator.model.Employee;
 import com.example.orgnavigator.model.Project;
@@ -74,9 +75,12 @@ public class ProjectService {
         }
     }
 
-    public String addEmployee(Long id) {
-        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
-        // Add your logic here for adding an employee to a project
-        return "Employee added successfully";
+    public Project addEmployee(Long projectId, Long employeeId) {
+        Employee employee = employeeRepository.findById(employeeId).orElseThrow(() ->
+                new EmployeeException("Employee not found with ID:" + employeeId));
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectException("Project not found with ID: " + projectId));
+        project.getEmployees().add(employee);
+        return projectRepository.save(project);
     }
 }

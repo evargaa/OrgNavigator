@@ -69,15 +69,9 @@ public class ProjectController {
         }
     }
 
-    @PutMapping("addEmployee/{id}")
-    public ResponseEntity<String> addEmployee(@PathVariable Long id) {
-        String message;
-        try {
-            message = projectService.addEmployee(id);
-            return ResponseEntity.ok(message);
-        } catch (Exception e) {
-            message = e.getMessage();
-            return ResponseEntity.badRequest().body(message);
+    @PutMapping("/{projectId}/addEmployee/{employeeId}")
+        public ResponseEntity<String> addEmployeeToProject(@PathVariable Long projectId, @PathVariable Long employeeId) {
+            Project project = projectService.addEmployee(projectId, employeeId);
+            return ResponseEntity.ok("Employee added to the project successfully.");
         }
-    }
 }
