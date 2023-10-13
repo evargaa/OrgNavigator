@@ -1,4 +1,4 @@
-package com.example.orgnavigator.controller;
+package com.example.orgnavigator.handlers;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataAccessException;
