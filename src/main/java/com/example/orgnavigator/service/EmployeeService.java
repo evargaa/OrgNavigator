@@ -19,65 +19,63 @@ import java.util.Optional;
 public class EmployeeService {
 
     @Autowired
-    EmployeeRepository employeeRepository;
+    private EmployeeRepository employeeRepository;
 
     @Autowired
-    ProjectRepository projectRepository;
+    private ProjectRepository projectRepository;
 
-    public ResponseEntity<List<Employee>> getAllEmployees() {
-        return new ResponseEntity<>(employeeRepository.findAll(), HttpStatus.OK);
+    public List<Employee> getAllEmployees() {
+        return employeeRepository.findAll();
     }
 
-    public ResponseEntity<String> addNewEmployee(Employee newEmployee) {
-        employeeRepository.save(newEmployee);
-        return new ResponseEntity<>("Successfully added " + newEmployee.getFirstName(), HttpStatus.CREATED);
+    public Employee addNewEmployee(Employee newEmployee) {
+        return employeeRepository.save(newEmployee);
     }
 
-    public ResponseEntity<?> getEmployeeById(Long id) {
+    public ResponseEntity<Employee> getEmployeeById(Long id) {
         Optional<Employee> employee = employeeRepository.findById(id);
         if (employee.isPresent()) {
-            return new ResponseEntity<>(employee, HttpStatus.OK);
+            return ResponseEntity.ok(employee.get());
         } else {
-            return new ResponseEntity<>("Employee not found", HttpStatus.NOT_FOUND);
+            throw new EmployeeException("Employee not found with ID: " + id);
         }
     }
 
-    public ResponseEntity<String> updateEmployee(Long id, Employee updatedEmployee) {
+    public String updateEmployee(Long id, Employee updatedEmployee) {
         Optional<Employee> optionalEmployee = employeeRepository.findById(id);
         if (optionalEmployee.isPresent()) {
             Employee existingEmployee = optionalEmployee.get();
             existingEmployee.setSalary(updatedEmployee.getSalary());
             existingEmployee.setPosition(updatedEmployee.getPosition());
             employeeRepository.save(existingEmployee);
-            return new ResponseEntity<>("Successfully edited " + existingEmployee.getFirstName(), HttpStatus.OK);
+            return "Successfully updated " + existingEmployee.getFirstName();
         } else {
-            throw new EmployeeException("Error occured while updating employee");
+            throw new EmployeeException("Error occurred while updating employee");
         }
     }
 
-    public ResponseEntity<List<Employee>> getEmployeesByPosition(String position) {
+    public List<Employee> getEmployeesByPosition(String position) {
         List<Employee> employees = employeeRepository.findByPositionContaining(position);
         if (employees.isEmpty()) {
-            throw new EmployeeException("Employee not found by this position: " + position);
+            throw new EmployeeException("No employees found with position: " + position);
         } else {
-            return new ResponseEntity<>(employees, HttpStatus.FOUND);
+            return employees;
         }
     }
+
     @Transactional
-    public ResponseEntity<String> deleteEmployee(Long id) {
+    public String deleteEmployee(Long id) {
         Optional<Employee> optionalEmployee = employeeRepository.findById(id);
-        if (optionalEmployee.isEmpty()) {
-            throw new EmployeeException("Employee not found with ID: " + id);
-        } else {
+        if (optionalEmployee.isPresent()) {
             Employee employee = optionalEmployee.get();
-            for (Project project : employee.getProjects()){
+            for (Project project : employee.getProjects()) {
                 project.getEmployees().remove(employee);
             }
-
             projectRepository.saveAll(employee.getProjects());
-
-            employeeRepository.deleteById(id);
-            return new ResponseEntity<>("Successfully deleted the employee", HttpStatus.OK);
+            employeeRepository.delete(employee);
+            return "Successfully deleted the employee";
+        } else {
+            throw new EmployeeException("Employee not found with ID: " + id);
         }
     }
 }
