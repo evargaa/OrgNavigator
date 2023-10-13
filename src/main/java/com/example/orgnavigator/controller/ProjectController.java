@@ -1,5 +1,6 @@
 package com.example.orgnavigator.controller;
 
+import com.example.orgnavigator.dto.ProjectWithBasicEmployeeDTO;
 import com.example.orgnavigator.model.Project;
 import com.example.orgnavigator.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,9 @@ public class ProjectController {
     ProjectService projectService;
 
     @GetMapping("all")
-    public ResponseEntity<List<Project>> allProjects() {
-        List<Project> projects = projectService.allProjects();
-        return ResponseEntity.ok(projects);
+    public ResponseEntity<List<ProjectWithBasicEmployeeDTO>> allProjects() {
+        List<ProjectWithBasicEmployeeDTO> projectDTOs = projectService.allProjects();
+        return ResponseEntity.ok(projectDTOs);
     }
 
     @GetMapping("find/{id}")

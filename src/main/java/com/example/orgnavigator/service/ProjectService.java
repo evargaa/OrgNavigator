@@ -1,10 +1,12 @@
 package com.example.orgnavigator.service;
 
+import com.example.orgnavigator.dto.ProjectWithBasicEmployeeDTO;
 import com.example.orgnavigator.exceptions.ProjectException;
 import com.example.orgnavigator.model.Employee;
 import com.example.orgnavigator.model.Project;
 import com.example.orgnavigator.repository.EmployeeRepository;
 import com.example.orgnavigator.repository.ProjectRepository;
+import com.example.orgnavigator.util.ProjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectService {
@@ -23,8 +26,11 @@ public class ProjectService {
     @Autowired
     EmployeeRepository employeeRepository;
 
-    public List<Project> allProjects() {
-        return projectRepository.findAll();
+    public List<ProjectWithBasicEmployeeDTO> allProjects() {
+        List<Project> projects = projectRepository.findAll();
+        return projects.stream()
+                .map(ProjectMapper::mapToProjectWithBasicEmployeesDTO)
+                .collect(Collectors.toList());
     }
 
     public String addNewProject(Project newProject) {
