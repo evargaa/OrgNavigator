@@ -23,33 +23,35 @@ public class ProjectService {
     @Autowired
     EmployeeRepository employeeRepository;
 
-    public ResponseEntity<List<Project>> allProjects() {
-        return new ResponseEntity<>(projectRepository.findAll(), HttpStatus.OK);
+    public List<Project> allProjects() {
+        return projectRepository.findAll();
     }
 
-    public ResponseEntity<String> addNewProject(Project newProject) {
+    public String addNewProject(Project newProject) {
         projectRepository.save(newProject);
-        return new ResponseEntity<>("Project " + newProject.getTitle() + " has been successfully made", HttpStatus.CREATED);
+        return "Project " + newProject.getTitle() + " has been successfully made";
     }
 
-    public ResponseEntity<Optional<Project>> findProjectById(Long id) {
-        if (projectRepository.findById(id).isEmpty()) {
-            throw new ProjectException("Project not found with ID: " + id);
+    public Project findProjectById(Long id) {
+        Optional<Project> project = projectRepository.findById(id);
+        if (project.isPresent()) {
+            return project.get();
         } else {
-            return new ResponseEntity<>(projectRepository.findById(id), HttpStatus.OK);
+            throw new ProjectException("Project not found with ID: " + id);
         }
     }
 
-    public ResponseEntity<String> deleteProject(Long id) {
-        if (projectRepository.findById(id).isEmpty()) {
-            throw new ProjectException("Project not found with ID: " + id);
-        } else {
+
+    public String deleteProject(Long id) {
+        if (projectRepository.existsById(id)) {
             projectRepository.deleteById(id);
-            return new ResponseEntity<>("Project deleted successfully!", HttpStatus.BAD_REQUEST);
+            return "Project deleted successfully!";
+        } else {
+            throw new ProjectException("Project not found with ID: " + id);
         }
     }
 
-    public ResponseEntity<String> updateStatus(Long id, Project newStatus) {
+    public String updateStatus(Long id, Project newStatus) {
         Optional<Project> optionalProject = projectRepository.findById(id);
         if (optionalProject.isPresent()) {
             Project existingProject = optionalProject.get();
@@ -57,10 +59,18 @@ public class ProjectService {
             if (newStatusValue != null) {
                 existingProject.setStatus(newStatusValue);
                 projectRepository.save(existingProject);
-                return new ResponseEntity<>("Status successfully updated", HttpStatus.OK);
+                return "Status successfully updated";
             } else {
-                throw new ProjectException("Status cant be null");            }
+                throw new ProjectException("Status can't be null");
+            }
         } else {
-            throw new ProjectException("Project not found with ID: " + id);        }
+            throw new ProjectException("Project not found with ID: " + id);
+        }
+    }
+
+    public String addEmployee(Long id) {
+        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
+        // Add your logic here for adding an employee to a project
+        return "Employee added successfully";
     }
 }
